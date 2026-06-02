@@ -473,6 +473,16 @@ function checkTSpin() {
     return corners >= 3;
 }
 
+// 【全消し判定のヘルパー関数】
+function checkPerfectClear() {
+    for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+            if (arena[y][x] !== 0) return false;
+        }
+    }
+    return true;
+}
+
 function arenaSweep(isTSpin) {
     let rowCount = 0;
     outer: for (let y = ROWS - 1; y >= 0; y--) {
@@ -518,6 +528,18 @@ function arenaSweep(isTSpin) {
             if (rowCount === 4) { scoreAdd = 800; text = "TETRIS!"; flash = "#FF007A"; }
         }
         
+        // 【追加：全消し（Perfect Clear）ボーナスロジック】
+        if (rowCount > 0 && checkPerfectClear()) {
+            scoreAdd += 10000; // 本家ライン準拠の大幅加算
+            text = "PERFECT CLEAR!!<br><span style='font-size:16px; color:#00F0FF;'>+" + scoreAdd + " PTS</span>";
+            flash = "#FF007A";
+            
+            // 全消し時画面全体を激しくフラッシュさせる
+            document.body.classList.remove('flash-screen');
+            void document.body.offsetWidth;
+            document.body.classList.add('flash-screen');
+        }
+
         if (crossedMilestone > 0) {
             if (crossedMilestone === 10) {
                 text += `<br><span style="font-size:24px;">SYSTEM AWAKEN</span>`;
@@ -544,7 +566,12 @@ function arenaSweep(isTSpin) {
 
 function triggerEffect(text, pts, color) {
     const el = document.getElementById('effect-text');
-    el.innerHTML = `<div style="color:${color}; text-shadow:0 0 20px ${color};">${text}</div><div style="font-size:26px;">+${pts}</div>`;
+    // すでにPerfect Clear側でPTS表記を設定している場合は二重表記を避ける
+    if (text.includes("PERFECT CLEAR")) {
+        el.innerHTML = `<div style="color:${color}; text-shadow:0 0 20px ${color}; line-height:1.4;">${text}</div>`;
+    } else {
+        el.innerHTML = `<div style="color:${color}; text-shadow:0 0 20px ${color};">${text}</div><div style="font-size:26px;">+${pts}</div>`;
+    }
     el.classList.remove('pop-anim');
     void el.offsetWidth;
     el.classList.add('pop-anim');
