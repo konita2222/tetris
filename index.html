@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXT-TETRIS Portal</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --accent-color: #00d2ff;
+            --sub-accent: #ff0055;
+            --card-bg: #252525;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid var(--sub-accent);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--accent-color);
+            border-left: 4px solid var(--sub-accent);
+            padding-left: 10px;
+            margin-top: 40px;
+        }
+
+        /* Game Links */
+        .game-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            text-align: center;
+            width: 200px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+
+        .game-card a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 20px;
+            background: var(--sub-accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .game-card a:hover {
+            opacity: 0.8;
+        }
+
+        /* Controls Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: var(--accent-color);
+        }
+
+        kbd {
+            background-color: #eee;
+            border-radius: 3px;
+            border: 1px solid #b4b4b4;
+            box-shadow: 0 1px 1px rgba(0,0,0,.2), 0 2px 0 0 rgba(255,255,255,.7) inset;
+            color: #333;
+            display: inline-block;
+            font-size: .85em;
+            font-weight: 700;
+            line-height: 1;
+            padding: 2px 4px;
+            white-space: nowrap;
+        }
+
+        /* News Section */
+        #news-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .news-item {
+            background: var(--card-bg);
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .news-date {
+            font-size: 0.8em;
+            color: #888;
+            margin-right: 10px;
+        }
+
+        .news-tag {
+            font-size: 0.7em;
+            background: #444;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-right: 8px;
+            text-transform: uppercase;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 0.8em;
+            color: #666;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>NEXT-TETRIS SYSTEM</h1>
+
+    <!-- お知らせセクション -->
+    <section id="news-section">
+        <h2>SYSTEM NEWS</h2>
+        <div id="news-loading">Loading data...</div>
+        <ul id="news-list"></ul>
+    </section>
+
+    <!-- ゲームへのリンク -->
+    <section>
+        <h2>SELECT VERSION</h2>
+        <div class="game-links">
+            <div class="game-card">
+                <h3>v4.1</h3>
+                <p>SRS Active<br>Standard Mode</p>
+                <a href="tetris-v4.1.html">START v4.1</a>
+            </div>
+            <div class="game-card">
+                <h3>v4.3</h3>
+                <p>7-BAG System<br>Updated Logic</p>
+                <a href="tetris-v4.3.html">START v4.3</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 操作方法 -->
+    <section>
+        <h2>CONTROLS</h2>
+        <p>以下のキーで操作してください。</p>
+        <table>
+            <tr>
+                <th>アクション</th>
+                <th>キー</th>
+            </tr>
+            <tr>
+                <td>移動 (左 / 右)</td>
+                <td><kbd>←</kbd> / <kbd>→</kbd></td>
+            </tr>
+            <tr>
+                <td>左回転</td>
+                <td><kbd>Z</kbd></td>
+            </tr>
+            <tr>
+                <td>右回転</td>
+                <td><kbd>X</kbd> または <kbd>↑</kbd></td>
+            </tr>
+            <tr>
+                <td>ソフトドロップ</td>
+                <td><kbd>↓</kbd></td>
+            </tr>
+            <tr>
+                <td>ハードドロップ</td>
+                <td><kbd>SPACE</kbd></td>
+            </tr>
+            <tr>
+                <td>ホールド</td>
+                <td><kbd>C</kbd> または <kbd>H</kbd></td>
+            </tr>
+        </table>
+    </section>
+
+    <footer>
+        &copy; NEXT-TETRIS PROJECT | AWAKEN MODE
+    </footer>
+</div>
+
+<script>
+    // news.json を読み込む処理
+    document.addEventListener('DOMContentLoaded', () => {
+        const newsList = document.getElementById('news-list');
+        const loadingMsg = document.getElementById('news-loading');
+
+        fetch('news.json')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                loadingMsg.style.display = 'none';
+                
+                // 日付の新しい順にソート（オプション）
+                data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                data.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'news-item';
+                    
+                    const tagHtml = item.tag ? `<span class="news-tag">${item.tag}</span>` : '';
+                    
+                    li.innerHTML = `
+                        <div>
+                            <span class="news-date">${item.date}</span>
+                            ${tagHtml}
+                            <strong>${item.title}</strong>
+                        </div>
+                        <div style="margin-top:5px; font-size:0.9em;">${item.content}</div>
+                    `;
+                    newsList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                loadingMsg.textContent = 'お知らせの読み込みに失敗しました。news.jsonを確認してください。';
+                loadingMsg.style.color = '#ff5555';
+                console.error('Fetch error:', error);
+            });
+    });
+</script>
+
+</body>
+</html>
