@@ -4,44 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXT-TETRIS Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #1a1a1a;
+            --cyan: #00F0FF;
+            --magenta: #FF007A;
+            --purple: #7000FF;
+            --dark-bg: #050014;
+            --card-bg: rgba(5, 0, 15, 0.85);
             --text-color: #e0e0e0;
-            --accent-color: #00d2ff;
-            --sub-accent: #ff0055;
-            --card-bg: #252525;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: var(--bg-color);
+            font-family: 'Share Tech Mono', monospace;
+            background-color: var(--dark-bg);
+            background-image: radial-gradient(circle at center, #110022 0%, #000 100%);
             color: var(--text-color);
             margin: 0;
             padding: 20px;
             line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* スキャンラインエフェクト */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+            pointer-events: none;
+            z-index: 999;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
+            position: relative;
+            z-index: 10;
         }
 
         h1 {
             text-align: center;
-            color: var(--accent-color);
+            color: var(--cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 48px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 2px solid var(--sub-accent);
-            padding-bottom: 10px;
-            margin-bottom: 30px;
+            letter-spacing: 8px;
+            text-shadow: 0 0 15px var(--cyan), 0 0 30px #0055aa;
+            margin-bottom: 10px;
+            animation: glitch-anim 4s infinite;
+        }
+
+        @keyframes glitch-anim {
+            0%, 90%, 100% { transform: none; color: var(--cyan); text-shadow: 0 0 15px var(--cyan); }
+            92% { transform: translate(2px, 1px) skewX(5deg); color: #fff; text-shadow: -2px 0 var(--magenta), 2px 0 var(--cyan); }
+            94% { transform: translate(-2px, -1px) skewX(-5deg); color: var(--magenta); text-shadow: 0 0 15px var(--magenta); }
+            96% { transform: translate(1px, -2px) skewX(3deg); color: #fff; text-shadow: 2px 0 var(--magenta), -2px 0 var(--cyan); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--magenta);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+            text-shadow: 0 0 5px var(--magenta);
         }
 
         h2 {
-            color: var(--accent-color);
-            border-left: 4px solid var(--sub-accent);
-            padding-left: 10px;
+            color: var(--cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 3px;
             margin-top: 40px;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 3px solid var(--magenta);
+            text-shadow: 0 0 5px rgba(0, 240, 255, 0.5);
         }
 
         /* Game Links */
@@ -50,40 +96,214 @@
             gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .game-card {
             background: var(--card-bg);
-            padding: 20px;
-            border: 1px solid #444;
-            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            padding: 25px 20px;
+            border: 2px solid rgba(0, 240, 255, 0.6);
+            border-radius: 0;
             text-align: center;
-            width: 200px;
-            transition: transform 0.2s, border-color 0.2s;
+            width: 240px;
+            transition: all 0.3s ease;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.1), 0 10px 30px rgba(0, 0, 0, 0.9);
+            position: relative;
+        }
+
+        .game-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 15px; width: 40px; height: 3px;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
         }
 
         .game-card:hover {
             transform: translateY(-5px);
-            border-color: var(--accent-color);
+            border-color: var(--magenta);
+            box-shadow: inset 0 0 15px rgba(255, 0, 122, 0.2), 0 10px 30px rgba(0, 0, 0, 0.9);
+        }
+
+        .game-card:hover::before {
+            background: var(--magenta);
+            box-shadow: 0 0 10px var(--magenta);
+        }
+
+        .game-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--cyan);
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+            transition: 0.3s;
+        }
+
+        .game-card:hover h3 {
+            color: var(--magenta);
+            text-shadow: 0 0 10px rgba(255, 0, 122, 0.5);
+        }
+
+        .game-card .tag {
+            display: inline-block;
+            font-size: 10px;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--magenta);
+            border: 1px solid var(--magenta);
+            padding: 2px 8px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            box-shadow: 0 0 5px rgba(255, 0, 122, 0.3);
+        }
+
+        .game-card p {
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.8;
+            margin-bottom: 20px;
         }
 
         .game-card a {
             display: inline-block;
-            margin-top: 15px;
-            padding: 8px 20px;
-            background: var(--sub-accent);
-            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--cyan);
+            background: rgba(0, 15, 30, 0.6);
+            border: 1px solid var(--cyan);
+            padding: 10px 30px;
             text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
+            letter-spacing: 2px;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
         }
 
         .game-card a:hover {
-            opacity: 0.8;
+            background: rgba(0, 240, 255, 0.2);
+            color: #fff;
+            box-shadow: 0 0 20px var(--cyan), inset 0 0 10px var(--cyan);
+            text-shadow: 0 0 5px #fff;
+        }
+
+        /* トグルセクション */
+        .toggle-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .toggle-btn {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--magenta);
+            background: rgba(30, 0, 15, 0.6);
+            border: 1px solid var(--magenta);
+            padding: 12px 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(255, 0, 122, 0.2);
+        }
+
+        .toggle-btn:hover {
+            background: rgba(255, 0, 122, 0.2);
+            color: #fff;
+            box-shadow: 0 0 20px var(--magenta), inset 0 0 10px var(--magenta);
+            text-shadow: 0 0 5px #fff;
+        }
+
+        .legacy-versions {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: max-height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), margin-top 0.4s ease;
+            margin-top: 0;
+        }
+
+        .legacy-versions.show {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 20px;
+            transform: scaleY(1);
+        }
+
+        .legacy-card {
+            background: rgba(10, 0, 20, 0.6);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            padding: 15px 20px;
+            margin: 10px auto;
+            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+            transition: all 0.3s;
+        }
+
+        .legacy-card:hover {
+            border-color: var(--magenta);
+            background: rgba(30, 0, 15, 0.4);
+        }
+
+        .legacy-card .ver-name {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--cyan);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .legacy-card .ver-desc {
+            font-size: 12px;
+            color: #888;
+            flex: 1;
+            margin-left: 20px;
+            text-align: left;
+        }
+
+        .legacy-card a {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            color: var(--magenta);
+            text-decoration: none;
+            border: 1px solid var(--magenta);
+            padding: 6px 16px;
+            clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+            transition: all 0.3s;
+        }
+
+        .legacy-card a:hover {
+            background: var(--magenta);
+            color: #fff;
+            box-shadow: 0 0 10px var(--magenta);
         }
 
         /* Controls Table */
+        .controls-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 240, 255, 0.6);
+            padding: 25px;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.1), 0 10px 30px rgba(0, 0, 0, 0.9);
+            position: relative;
+        }
+
+        .controls-panel::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 15px; width: 40px; height: 3px;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -91,57 +311,115 @@
         }
 
         th, td {
-            border: 1px solid #444;
-            padding: 10px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 12px 15px;
             text-align: left;
         }
 
         th {
-            background-color: #333;
-            color: var(--accent-color);
+            background-color: rgba(0, 240, 255, 0.1);
+            color: var(--cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            letter-spacing: 2px;
+        }
+
+        td {
+            color: #ccc;
+            font-size: 14px;
         }
 
         kbd {
-            background-color: #eee;
+            background-color: #111;
             border-radius: 3px;
-            border: 1px solid #b4b4b4;
-            box-shadow: 0 1px 1px rgba(0,0,0,.2), 0 2px 0 0 rgba(255,255,255,.7) inset;
-            color: #333;
+            border: 1px solid #444;
+            box-shadow: 0 1px 1px rgba(0,0,0,.2), 0 2px 0 0 rgba(255,255,255,.1) inset;
+            color: var(--cyan);
             display: inline-block;
             font-size: .85em;
             font-weight: 700;
             line-height: 1;
-            padding: 2px 4px;
+            padding: 4px 8px;
             white-space: nowrap;
+            font-family: 'Share Tech Mono', monospace;
         }
 
         /* News Section */
+        #news-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 240, 255, 0.6);
+            padding: 25px;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.1), 0 10px 30px rgba(0, 0, 0, 0.9);
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        #news-section::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 15px; width: 40px; height: 3px;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        #news-loading {
+            color: var(--magenta);
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+        }
+
         #news-list {
             list-style: none;
             padding: 0;
         }
 
         .news-item {
-            background: var(--card-bg);
+            background: rgba(0, 0, 0, 0.3);
             margin-bottom: 10px;
             padding: 15px;
-            border-radius: 4px;
-            border-left: 3px solid var(--accent-color);
+            border-radius: 0;
+            border-left: 3px solid var(--cyan);
+            transition: all 0.3s;
+        }
+
+        .news-item:hover {
+            border-left-color: var(--magenta);
+            background: rgba(255, 0, 122, 0.05);
         }
 
         .news-date {
             font-size: 0.8em;
             color: #888;
             margin-right: 10px;
+            font-family: 'Share Tech Mono', monospace;
         }
 
         .news-tag {
             font-size: 0.7em;
-            background: #444;
-            padding: 2px 6px;
-            border-radius: 3px;
+            background: rgba(255, 0, 122, 0.2);
+            color: var(--magenta);
+            padding: 2px 8px;
+            border-radius: 0;
             margin-right: 8px;
             text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255, 0, 122, 0.4);
+        }
+
+        .news-item strong {
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+        }
+
+        .news-item div:last-child {
+            margin-top: 5px;
+            font-size: 0.9em;
+            color: #aaa;
         }
 
         footer {
@@ -149,19 +427,42 @@
             margin-top: 60px;
             font-size: 0.8em;
             color: #666;
-            border-top: 1px solid #333;
+            border-top: 1px solid rgba(0, 240, 255, 0.2);
             padding-top: 20px;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        /* 隠しボタン */
+        .hidden-trigger {
+            position: fixed;
+            bottom: 5px;
+            right: 5px;
+            width: 12px;
+            height: 12px;
+            background: rgba(0, 240, 255, 0.08);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+
+        .hidden-trigger:hover {
+            background: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 10px var(--cyan);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>NEXT-TETRIS SYSTEM</h1>
+    <h1>NEXT-TETRIS</h1>
+    <div class="subtitle">SYSTEM PORTAL // AWAKEN MODE</div>
 
     <!-- お知らせセクション -->
     <section id="news-section">
-        <h2>SYSTEM NEWS</h2>
+        <h2 style="margin-top:0; border-left:none; padding-left:0;">SYSTEM NEWS</h2>
         <div id="news-loading">Loading data...</div>
         <ul id="news-list"></ul>
     </section>
@@ -171,29 +472,43 @@
         <h2>SELECT VERSION</h2>
         <div class="game-links">
             <div class="game-card">
-                <h3>v4.1</h3>
-                <p>安定版<br>SRS Active<br>Standard Mode</p>
-                <a href="tetris-v4.1.html">START v4.1</a>
-            </div>
-            <div class="game-card">
-                <h3>v4.3</h3>
-                <p>旧版<br>7-BAG System<br>Updated Logic</p>
-                <a href="tetris-v4.3.html">START v4.3</a>
-            </div>
-            <div class="game-card">
-                <h3>v4.3.1</h3>
-                <p>最新版(beta)<br>new system<br>Updated</p>
-                <a href="tetris-v4.3.1.html">START v4.3.1(beta)</a>
+                <h3>v4.5</h3>
+                <span class="tag">LATEST</span>
+                <p>最新版<br>途中でやめれるように<br>スタート画面の変更</p>
+                <a href="tetris-v4.5.html">START v4.5</a>
             </div>
             <div class="game-card">
                 <h3>v4.3.5</h3>
-                <p>ベータ版<br>T-spin triple<br>Updated</p>
-                <a href="tetris-v4.3.5.html">START v4.3.5(beta)</a>
+                <span class="tag">FEATURED</span>
+                <p>T-spin triple実装<br>高度な回転システム</p>
+                <a href="tetris-v4.3.5.html">START v4.3.5</a>
             </div>
             <div class="game-card">
-                <h3>v4.4</h3>
-                <p>正式最新版<br>Visual details<br>Updated</p>
-                <a href="tetris-v4.4.html">START v4.4</a>
+                <h3>v4.1</h3>
+                <span class="tag">STABLE</span>
+                <p>軽量なコア・モジュール<br>安定動作保証</p>
+                <a href="tetris-v4.1.html">START v4.1</a>
+            </div>
+        </div>
+
+        <div class="toggle-section">
+            <button class="toggle-btn" id="legacy-toggle">▼ SHOW LEGACY MODULES</button>
+            <div class="legacy-versions" id="legacy-panel">
+                <div class="legacy-card">
+                    <span class="ver-name">v4.4.5</span>
+                    <span class="ver-desc">REN(連)システム、およびBack-to-Back(B2B)システムを実装した実験的先行モジュール</span>
+                    <a href="tetris-v4.4.5.html">START</a>
+                </div>
+                <div class="legacy-card">
+                    <span class="ver-name">v4.4</span>
+                    <span class="ver-desc">各種レンダリングの最適化とエフェクト向上</span>
+                    <a href="tetris-v4.4.html">START</a>
+                </div>
+                <div class="legacy-card">
+                    <span class="ver-name">v4.3</span>
+                    <span class="ver-desc">スコアシステムと落下アルゴリズムの調整版</span>
+                    <a href="tetris-v4.3.html">START</a>
+                </div>
             </div>
         </div>
     </section>
@@ -201,43 +516,48 @@
     <!-- 操作方法 -->
     <section>
         <h2>CONTROLS</h2>
-        <p>以下のキーで操作してください。</p>
-        <table>
-            <tr>
-                <th>アクション</th>
-                <th>キー</th>
-            </tr>
-            <tr>
-                <td>移動 (左 / 右)</td>
-                <td><kbd>←</kbd> / <kbd>→</kbd></td>
-            </tr>
-            <tr>
-                <td>左回転</td>
-                <td><kbd>Z</kbd></td>
-            </tr>
-            <tr>
-                <td>右回転</td>
-                <td><kbd>X</kbd> または <kbd>↑</kbd></td>
-            </tr>
-            <tr>
-                <td>ソフトドロップ</td>
-                <td><kbd>↓</kbd></td>
-            </tr>
-            <tr>
-                <td>ハードドロップ</td>
-                <td><kbd>SPACE</kbd></td>
-            </tr>
-            <tr>
-                <td>ホールド</td>
-                <td><kbd>C</kbd> または <kbd>H</kbd></td>
-            </tr>
-        </table>
+        <div class="controls-panel">
+            <p style="color:#888; font-size:13px; margin-bottom:15px;">以下のキーで操作してください。</p>
+            <table>
+                <tr>
+                    <th>アクション</th>
+                    <th>キー</th>
+                </tr>
+                <tr>
+                    <td>移動 (左 / 右)</td>
+                    <td><kbd>←</kbd> / <kbd>→</kbd></td>
+                </tr>
+                <tr>
+                    <td>左回転</td>
+                    <td><kbd>Z</kbd></td>
+                </tr>
+                <tr>
+                    <td>右回転</td>
+                    <td><kbd>X</kbd> または <kbd>↑</kbd></td>
+                </tr>
+                <tr>
+                    <td>ソフトドロップ</td>
+                    <td><kbd>↓</kbd></td>
+                </tr>
+                <tr>
+                    <td>ハードドロップ</td>
+                    <td><kbd>SPACE</kbd></td>
+                </tr>
+                <tr>
+                    <td>ホールド</td>
+                    <td><kbd>C</kbd> または <kbd>H</kbd></td>
+                </tr>
+            </table>
+        </div>
     </section>
 
     <footer>
         &copy; NEXT-TETRIS PROJECT | AWAKEN MODE
     </footer>
 </div>
+
+<!-- 隠しボタン -->
+<button class="hidden-trigger" id="hidden-btn" title=""></button>
 
 <script>
     // news.json を読み込む処理
@@ -252,16 +572,16 @@
             })
             .then(data => {
                 loadingMsg.style.display = 'none';
-                
-                // 日付の新しい順にソート（オプション）
+
+                // 日付の新しい順にソート
                 data.sort((a, b) => new Date(b.date) - new Date(a.date));
 
                 data.forEach(item => {
                     const li = document.createElement('li');
                     li.className = 'news-item';
-                    
+
                     const tagHtml = item.tag ? `<span class="news-tag">${item.tag}</span>` : '';
-                    
+
                     li.innerHTML = `
                         <div>
                             <span class="news-date">${item.date}</span>
@@ -278,6 +598,24 @@
                 loadingMsg.style.color = '#ff5555';
                 console.error('Fetch error:', error);
             });
+
+        // レガシーバージョンのトグル
+        const legacyToggle = document.getElementById('legacy-toggle');
+        const legacyPanel = document.getElementById('legacy-panel');
+
+        legacyToggle.addEventListener('click', () => {
+            legacyPanel.classList.toggle('show');
+            if (legacyPanel.classList.contains('show')) {
+                legacyToggle.innerText = '▲ HIDE LEGACY MODULES';
+            } else {
+                legacyToggle.innerText = '▼ SHOW LEGACY MODULES';
+            }
+        });
+
+        // 隠しボタン
+        document.getElementById('hidden-btn').addEventListener('click', () => {
+            window.location.href = 'kakushi.html';
+        });
     });
 </script>
 
